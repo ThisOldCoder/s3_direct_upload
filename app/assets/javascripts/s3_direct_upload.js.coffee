@@ -131,6 +131,17 @@ $.fn.S3Uploader = (options) ->
           $uploadForm.find("input[name='key']").val(settings.path + key)
         data
 
+    $uploadForm.fileupload "option", "fail", (e, data) ->
+      retries = data.context.data("retries") or 0
+      if data.errorThrown isnt "abort" and retries < 3 
+        console.log 'Retrying ...'
+        retries += 1
+        data.context.data "retries", retries
+        data.submit()
+        return
+      data.context.removeData "retries"
+      $.blueimpUI.fileupload::options.fail.call this, e, data
+
   build_content_object = ($uploadForm, file, result) ->
     content = {}
     if result # Use the S3 response to set the URL to avoid character encodings bugs
