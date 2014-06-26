@@ -134,7 +134,6 @@ $.fn.S3Uploader = (options) ->
     $uploadForm.fileupload "option", "fail", (e, data) ->
       retries = data.context.data("retries") or 0
       if data.errorThrown isnt "abort" and retries < 3 
-        console.log 'Retrying ...'
         retries += 1
         data.context.data "retries", retries
         data.submit()
